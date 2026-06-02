@@ -50,6 +50,37 @@
 
 ---
 
+## 📥 БЫСТРЫЙ СТАРТ
+
+### 1. Сделайте резервные копии текущих файлов
+```bash
+# Остановить сервис nfqws2
+/opt/etc/init.d/S51nfqws2 stop
+
+# Сделать из основных файлов - резервные копии
+mv /opt/etc/init.d/S51nfqws2 /opt/etc/init.d/S51nfqws2.bak
+mv /opt/etc/ndm/netfilter.d/100-nfqws2.sh /opt/etc/ndm/netfilter.d/100-nfqws2.sh.bak
+```
+### 2. Скачайте готовые файлы из этого репозитория сразу в нужные директории
+```bash
+wget -P /opt/etc/ndm/netfilter.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/100-nfqws2.sh
+wget -P /opt/etc/init.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/S51nfqws
+# Выдать файлу S51nfqws права на исполнение
+chmod +x /opt/etc/init.d/S51nfqws2
+```
+### 3. Отредактировать /opt/etc/nfqws2/nfqws2.conf чтобы UDP_PORTS и TCP_PORTS точно были в кавычках ""
+```bash
+sed -i -e 's/^\(TCP_PORTS=\|UDP_PORTS=\)[[:space:]]*\([^"'"'"'].*\)$/\1"\2"/' /opt/etc/nfqws2/nfqws2.conf
+```
+### 3. Запуск сервиса nfqws2
+```bash
+/opt/etc/init.d/S51nfqws2 start
+```
+
+---
+
+## 📥 РУЧНАЯ ИНТЕГРАЦИЯ
+
 ## 🔧 Действия для интеграции в обычную версию
 
 ### 📋 Предварительные требования
@@ -302,4 +333,4 @@ ipset test nfqws_ports_udp 443
 Официальный репозиторий [nfqws2-keenetic](https://github.com/nfqws/nfqws2-keenetic)
 Исходный код [zapret2](https://github.com/bol-van/zapret2)
 
-Автор модификации: Fat32alist | *Дата: 2026-06-02*
+Автор модификации: Fat32alist (с использованием DeepSeek) | *Дата: 2026-06-02*
