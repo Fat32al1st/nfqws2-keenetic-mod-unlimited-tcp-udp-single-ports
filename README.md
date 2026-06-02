@@ -68,7 +68,7 @@ mv /opt/etc/ndm/netfilter.d/100-nfqws2.sh /opt/etc/ndm/netfilter.d/100-nfqws2.sh
 ### 2. Скачайте готовые файлы из этого репозитория сразу в нужные директории
 ```bash
 wget -P /opt/etc/ndm/netfilter.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/100-nfqws2.sh
-wget -P /opt/etc/init.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/S51nfqws
+wget -P /opt/etc/init.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/S51nfqws2
 # Выдать файлу S51nfqws права на исполнение
 chmod +x /opt/etc/init.d/S51nfqws2
 ```
