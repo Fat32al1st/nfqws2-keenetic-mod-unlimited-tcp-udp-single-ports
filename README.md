@@ -69,8 +69,9 @@ mv /opt/etc/ndm/netfilter.d/100-nfqws2.sh /opt/etc/ndm/netfilter.d/100-nfqws2.sh
 ```bash
 wget -P /opt/etc/ndm/netfilter.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/100-nfqws2.sh
 wget -P /opt/etc/init.d https://github.com/Fat32al1st/nfqws2-keenetic-mod-unlimited-tcp-udp-single-ports/blob/caaf451d5004a4cd98a6a4b76f7b57a7f5491ce8/S51nfqws2
-# Выдать файлу S51nfqws права на исполнение
+# Выдать файлам права на исполнение
 chmod +x /opt/etc/init.d/S51nfqws2
+chmod +x /opt/etc/ndm/netfilter.d/100-nfqws2.sh
 ```
 ### 3. Отредактировать /opt/etc/nfqws2/nfqws2.conf чтобы UDP_PORTS и TCP_PORTS точно были в кавычках ""
 ```bash
@@ -260,9 +261,36 @@ fi
 #!/bin/sh
 
 PIDFILE="/opt/var/run/nfqws2.pid"
+CONFFILE="/opt/etc/nfqws2/nfqws2.conf"
 
-if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE") 2>/dev/null; then
-  exit
+if [ ! -f "$PIDFILE" ] || ! kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    exit 0
+fi
+
+if [ -f "$CONFFILE" ]; then
+    . "$CONFFILE"
+fi
+
+ensure_nfqws_chains() {
+    local cmd="$1"
+    # Проверяем и создаём цепочку nfqws_post, если её нет
+    if ! $cmd -t mangle -L nfqws_post &>/dev/null; then
+        $cmd -t mangle -N nfqws_post 2>/dev/null
+    fi
+    # Проверяем и создаём цепочку nfqws_pre, если её нет
+    if ! $cmd -t mangle -L nfqws_pre &>/dev/null; then
+        $cmd -t mangle -N nfqws_pre 2>/dev/null
+    fi
+    if [ "$cmd" = "iptables" ]; then
+        if ! $cmd -t nat -L nfqws_nat &>/dev/null; then
+            $cmd -t nat -N nfqws_nat 2>/dev/null
+        fi
+    fi
+}
+
+ensure_nfqws_chains iptables
+if [ -n "$IPV6_ENABLED" ] && [ "$IPV6_ENABLED" -ne "0" ]; then
+    ensure_nfqws_chains ip6tables
 fi
 
 [ "$table" != "mangle" ] && [ "$table" != "nat" ] && exit
